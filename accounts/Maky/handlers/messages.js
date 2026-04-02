@@ -10,9 +10,6 @@ import crypto from "crypto";
 import { DisconnectReason } from '@whiskeysockets/baileys';
 import { fileURLToPath } from 'url';
 
-// ========== استيراد دوال الترحيب ==========
-import { handleWelcome } from "../plugins/المجموعات/منورين.js";
-
 let plugins = null;
 const messageBuffer = [];
 let sockGlobal;
@@ -156,21 +153,6 @@ export async function handleMessages(sock, { messages }) {
     if (!sockGlobal.ev && sock.ev) sockGlobal.ev = sock.ev;
     
     attachSystemLogger(sock);
-
-    // ========== إضافة مستمع الترحيب ==========
-    if (!sock._welcomeListenerAttached) {
-        sock.ev.on('group-participants.update', async (update) => {
-            try {
-                await handleWelcome(sock, update);
-            } catch (err) {
-                if (!err.message?.includes('Cannot find module')) {
-                    console.error('❌ خطأ في مستمع الترحيب:', err);
-                }
-            }
-        });
-        sock._welcomeListenerAttached = true;
-        console.log(chalk.green('✅ مستمع الترحيب تم تفعيله بنجاح'));
-    }
 
     if (!sockGlobal.activeListeners) {
         sockGlobal.activeListeners = new Map();
